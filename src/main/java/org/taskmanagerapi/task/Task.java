@@ -1,27 +1,53 @@
 package org.taskmanagerapi.task;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 public class Task {
-    public Task () {
+    protected Task (){}
+
+    public Task (String title, String description) {
+        this.title = title;
+        this.description = description;
         this.status = TaskStatus.TODO;
         this.createdAt = LocalDateTime.now();
     }
 
     @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 
-    String title;
+    private String title;
 
-    String description;
+    private String description;
 
     @Enumerated(EnumType.STRING)
-    TaskStatus status;
+    private TaskStatus status;
 
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void changeStatus(TaskStatus newStatus) {
+        this.status = newStatus;
+    }
 }
