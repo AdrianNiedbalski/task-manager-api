@@ -2,6 +2,8 @@ package org.taskmanagerapi.task;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
@@ -10,8 +12,12 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public Task createTask(String title, String description){
+    public Task create(String title, String description) {
         Task newTask = new Task(title, description);
         return taskRepository.save(newTask);
+    }
+
+    public List<Task> findAll() {
+        return taskRepository.findAll();
     }
 }
