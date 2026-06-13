@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("TaskService Test")
@@ -28,8 +29,9 @@ class TaskServiceTest {
     void createTaskTest() {
         String title = "Test task";
         String description = "Test task description";
-
         Task task = taskService.create(title, description);
+
+        when(taskService.create(title, description)).thenReturn(task);
 
         assertNotNull(task);
         assertEquals(title, task.getTitle());
