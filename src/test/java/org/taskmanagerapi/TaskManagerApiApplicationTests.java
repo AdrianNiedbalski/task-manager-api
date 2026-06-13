@@ -1,4 +1,4 @@
-package org.learn.taskmanagerapi;
+package org.taskmanagerapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
