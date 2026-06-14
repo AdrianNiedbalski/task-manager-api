@@ -2,7 +2,7 @@ package org.taskmanagerapi.task;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import org.taskmanagerapi.task.dto.CreateTaskResponse;
+import org.taskmanagerapi.task.dto.CreateTaskRequest;
 import org.taskmanagerapi.task.dto.TaskResponse;
 
 @RestController
@@ -16,10 +16,10 @@ public class TaskController {
 
     @PostMapping("/create")
     @Valid
-    @RequestBody
-    public CreateTaskResponse createTask(String title, String description) {
-        Task createTask = taskService.create(title, description);
-        return new CreateTaskResponse(request.getTitle(), request.getDescription());
+    @RequestBody CreateTaskRequest request
+    public CreateTaskRequest createTask(CreateTaskRequest request) {
+        Task createTask = taskService.create(request.title(), request.description());
+        return new CreateTaskRequest(createTask.getTitle(), createTask.getDescription());
     }
 
     @GetMapping("/all")
