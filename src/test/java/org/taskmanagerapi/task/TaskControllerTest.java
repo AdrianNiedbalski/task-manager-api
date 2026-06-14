@@ -58,8 +58,7 @@ public class TaskControllerTest {
         mockMvc.perform(post("/api/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(TaskStatus.TODO.name()));
+                .andExpect(status().isBadRequest());
 
         verify(taskService, never()).create(request.title(), request.description());
     }

@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,13 +67,26 @@ class TaskServiceTest {
     @DisplayName("Find Task By Id Test")
     void findTaskByIdTest() {
         Task task = new Task(TITLE, DESCRIPTION);
-        when(taskRepository.findById(1L)).thenReturn(task));
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
 
         Task result = taskService.findById(1L);
 
         assertNotNull(result);
         assertEquals(TITLE, result.getTitle());
         assertEquals(DESCRIPTION, result.getDescription());
+        verify(taskRepository).findById(1L);
+    }
+
+    @Test
+    @DisplayName("Find Task By Id Not Found Test")
+    void findTaskByIdNotFoundTest() {
+        when(taskRepository.findById(1L)).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            taskService.findById(1L);
+        });
+
+        assertEquals("Task not found with id: 1", exception.getMessage());
         verify(taskRepository).findById(1L);
     }
 }
