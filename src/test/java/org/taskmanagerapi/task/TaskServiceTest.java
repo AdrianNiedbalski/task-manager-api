@@ -7,6 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -21,11 +23,13 @@ class TaskServiceTest {
     @InjectMocks
     private TaskService taskService;
 
+    private String title = "Test task";
+    private String description = "Test task description";
+
+
     @Test
     @DisplayName("Create Task Test")
     void createTaskTest() {
-        String title = "Test task";
-        String description = "Test task description";
 
         Task savedTask = new Task(title, description);
 
@@ -38,5 +42,21 @@ class TaskServiceTest {
         assertEquals(description, result.getDescription());
 
         verify(taskRepository).save(any(Task.class));
+    }
+
+    @Test
+    @DisplayName("Find All Tasks Test")
+    void findAllTasksTest() {
+        Task task1 = new Task(title, description);
+        Task task2 = new Task("Another task", "Another description");
+
+        when(taskRepository.findAll()).thenReturn(List.of(task1, task2));
+
+        List<Task> result = taskService.findAll();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(title, result.get(0).getTitle());
+        assertEquals("Another task", result.get(1).getTitle());
     }
 }
