@@ -23,8 +23,8 @@ class TaskServiceTest {
     @InjectMocks
     private TaskService taskService;
 
-    private String title = "Test task";
-    private String description = "Test task description";
+    private static final String title = "Test task";
+    private static final String description = "Test task description";
 
 
     @Test
@@ -40,6 +40,7 @@ class TaskServiceTest {
         assertNotNull(result);
         assertEquals(title, result.getTitle());
         assertEquals(description, result.getDescription());
+        assertEquals(TaskStatus.TODO, result.getStatus());
 
         verify(taskRepository).save(any(Task.class));
     }
@@ -58,5 +59,6 @@ class TaskServiceTest {
         assertEquals(2, result.size());
         assertEquals(title, result.get(0).getTitle());
         assertEquals("Another task", result.get(1).getTitle());
+        verify(taskRepository).findAll();
     }
 }
