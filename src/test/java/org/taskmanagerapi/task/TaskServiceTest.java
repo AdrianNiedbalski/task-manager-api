@@ -23,23 +23,23 @@ class TaskServiceTest {
     @InjectMocks
     private TaskService taskService;
 
-    private static final String title = "Test task";
-    private static final String description = "Test task description";
+    private static final String TITLE = "Test task";
+    private static final String DESCRIPTION = "Test task description";
 
 
     @Test
     @DisplayName("Create Task Test")
     void createTaskTest() {
 
-        Task savedTask = new Task(title, description);
+        Task savedTask = new Task(TITLE, DESCRIPTION);
 
         when(taskRepository.save(any(Task.class))).thenReturn(savedTask);
 
-        Task result = taskService.create(title, description);
+        Task result = taskService.create(TITLE, DESCRIPTION);
 
         assertNotNull(result);
-        assertEquals(title, result.getTitle());
-        assertEquals(description, result.getDescription());
+        assertEquals(TITLE, result.getTitle());
+        assertEquals(DESCRIPTION, result.getDescription());
         assertEquals(TaskStatus.TODO, result.getStatus());
 
         verify(taskRepository).save(any(Task.class));
@@ -48,7 +48,7 @@ class TaskServiceTest {
     @Test
     @DisplayName("Find All Tasks Test")
     void findAllTasksTest() {
-        Task task1 = new Task(title, description);
+        Task task1 = new Task(TITLE, DESCRIPTION);
         Task task2 = new Task("Another task", "Another description");
 
         when(taskRepository.findAll()).thenReturn(List.of(task1, task2));
@@ -57,7 +57,7 @@ class TaskServiceTest {
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals(title, result.get(0).getTitle());
+        assertEquals(TITLE, result.get(0).getTitle());
         assertEquals("Another task", result.get(1).getTitle());
         verify(taskRepository).findAll();
     }
