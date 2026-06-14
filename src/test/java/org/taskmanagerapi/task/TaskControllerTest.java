@@ -52,15 +52,30 @@ public class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("Create findAll Tasks Test")
+    @DisplayName("Create Task with blank title should return 400")
+    public void createTask_withBlankTitle_shouldReturn400() throws Exception {
+        CreateTaskRequest request = new CreateTaskRequest("", "Test task description");
+        Task createdTask = new Task(request.title(), request.description());
+
+        when(taskService.create(request.title(), request.description())).thenReturn(createdTask);
+
+        mockMvc.perform(post("/api/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        verify(taskService).create(request.title(), request.description());
+    }
+
+    @Test
+    @DisplayName("Find all tasks returns task list")
     public void findAllTasks_shouldReturn200AndListOfTasks() throws Exception {
         Task task1 = new Task("Test task 1", "Test task description 1");
         Task task2 = new Task("Test task 2", "Test task description 2");
 
         when(taskService.findAll()).thenReturn(List.of(task1, task2));
 
-        mockMvc.perform(get("/api/tasks")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].title").value(task1.getTitle()))
                 .andExpect(jsonPath("$[0].description").value(task1.getDescription()))
