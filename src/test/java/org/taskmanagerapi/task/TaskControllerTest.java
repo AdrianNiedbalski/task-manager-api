@@ -24,18 +24,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TaskControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @MockitoBean
-    TaskService taskService;
+    private TaskService taskService;
+
+    private static final String TITLE = "Test task";
+    private static final String DESCRIPTION = "Test task description";
 
     @Test
     @DisplayName("Create Task Test")
     public void createTask_shouldReturn201AndCreatedTask() throws Exception {
-        CreateTaskRequest request = new CreateTaskRequest("Test task", "Test task description");
+        CreateTaskRequest request = new CreateTaskRequest(TITLE, DESCRIPTION);
         Task createdTask = new Task(request.title(), request.description());
 
         when(taskService.create(request.title(), request.description())).thenReturn(createdTask);
@@ -56,8 +59,8 @@ public class TaskControllerTest {
         CreateTaskRequest request = new CreateTaskRequest("", "Test task description");
 
         mockMvc.perform(post("/api/tasks")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
 
         verify(taskService, never()).create(request.title(), request.description());
@@ -79,6 +82,23 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$[1].description").value(task2.getDescription()));
 
         verify(taskService).findAll();
+    }
+
+    @Test
+    @DisplayName("Find task by id returns task")
+    public void findTaskById_shouldReturn200AndTask() throws Exception {
+        Task task = new Task(TITLE, DESCRIPTION);
+        Long id = 1L;
+
+        when(taskService.findById(id)).thenReturn(task);
+
+        mockMvc.perform(get("/api/tasks/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(task.getTitle()))
+                .andExpect(jsonPath("$.description").value(task.getDescription()))
+                .andExpect(jsonPath("$.status").value(task.getStatus().name()));
+
+        verify(taskService).findById(id);
 
     }
 }
