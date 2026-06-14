@@ -27,7 +27,6 @@ class TaskServiceTest {
     private static final String TITLE = "Test task";
     private static final String DESCRIPTION = "Test task description";
 
-
     @Test
     @DisplayName("Create Task Test")
     void createTaskTest() {

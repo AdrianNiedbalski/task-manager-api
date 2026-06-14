@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.taskmanagerapi.task.dto.CreateTaskRequest;
 import tools.jackson.databind.ObjectMapper;
 
-
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -34,6 +33,7 @@ public class TaskControllerTest {
 
     private static final String TITLE = "Test task";
     private static final String DESCRIPTION = "Test task description";
+    private static final Long id = 1L;
 
     @Test
     @DisplayName("Create Task Test")
@@ -88,7 +88,6 @@ public class TaskControllerTest {
     @DisplayName("Find task by id returns task")
     public void findTaskById_shouldReturn200AndTask() throws Exception {
         Task task = new Task(TITLE, DESCRIPTION);
-        Long id = 1L;
 
         when(taskService.findById(id)).thenReturn(task);
 
@@ -100,5 +99,18 @@ public class TaskControllerTest {
 
         verify(taskService).findById(id);
 
+    }
+
+    @Test
+    @DisplayName("Find task by id not found returns 400")
+    public void findTaskById_notFound_shouldReturn400() throws Exception {
+
+        when(taskService.findById(id)).thenThrow(new IllegalArgumentException("Task not found with id: " + id));
+
+        mockMvc.perform(get("/api/tasks/{id}", id))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Task not found with id: " + id));
+
+        verify(taskService).findById(id);
     }
 }
