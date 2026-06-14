@@ -13,8 +13,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -55,16 +54,14 @@ public class TaskControllerTest {
     @DisplayName("Create Task with blank title should return 400")
     public void createTask_withBlankTitle_shouldReturn400() throws Exception {
         CreateTaskRequest request = new CreateTaskRequest("", "Test task description");
-        Task createdTask = new Task(request.title(), request.description());
-
-        when(taskService.create(request.title(), request.description())).thenReturn(createdTask);
 
         mockMvc.perform(post("/api/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(TaskStatus.TODO.name()));
 
-        verify(taskService).create(request.title(), request.description());
+        verify(taskService, never()).create(request.title(), request.description());
     }
 
     @Test
