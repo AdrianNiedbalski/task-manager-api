@@ -17,14 +17,14 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateTaskRequest createTask(@Valid @RequestBody CreateTaskRequest request) {
+    public TaskResponse createTask(@Valid @RequestBody CreateTaskRequest request) {
         Task createTask = taskService.create(request.title(), request.description());
-        return new CreateTaskRequest(createTask.getTitle(), createTask.getDescription());
+        return new TaskResponse(createTask.getId(), createTask.getTitle(), createTask.getDescription(), createTask.getStatus(), createTask.getCreatedAt());
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public List<TaskResponse> findAll() {
         return taskService.findAll()
                 .stream()
