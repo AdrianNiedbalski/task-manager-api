@@ -1,0 +1,73 @@
+package org.taskmanagerapi.task;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.taskmanagerapi.task.dto.CreateTaskRequest;
+import tools.jackson.databind.ObjectMapper;
+
+
+import java.util.List;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(TaskController.class)
+@DisplayName("TaskController Test")
+public class TaskControllerTest {
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @MockitoBean
+    TaskService taskService;
+
+    @Test
+    @DisplayName("Create Task Test")
+    public void createTask_shouldReturn201AndCreatedTask() throws Exception {
+        CreateTaskRequest request = new CreateTaskRequest("Test task", "Test task description");
+        Task createdTask = new Task(request.title(), request.description());
+
+        when(taskService.create(request.title(), request.description())).thenReturn(createdTask);
+
+        mockMvc.perform(post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.title").value(request.title()))
+                .andExpect(jsonPath("$.description").value(request.description()));
+
+        verify(taskService).create(request.title(), request.description());
+    }
+
+    @Test
+    @DisplayName("Create findAll Tasks Test")
+    public void findAllTasks_shouldReturn200AndListOfTasks() throws Exception {
+        Task task1 = new Task("Test task 1", "Test task description 1");
+        Task task2 = new Task("Test task 2", "Test task description 2");
+
+        when(taskService.findAll()).thenReturn(List.of(task1, task2));
+
+        mockMvc.perform(get("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value(task1.getTitle()))
+                .andExpect(jsonPath("$[0].description").value(task1.getDescription()))
+                .andExpect(jsonPath("$[1].title").value(task2.getTitle()))
+                .andExpect(jsonPath("$[1].description").value(task2.getDescription()));
+
+        verify(taskService).findAll();
+
+    }
+}
