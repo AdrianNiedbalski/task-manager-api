@@ -26,14 +26,17 @@ class TaskServiceTest {
     void createTaskTest() {
         String title = "Test task";
         String description = "Test task description";
-        Task task = taskService.create(title, description);
 
-        when(taskRepository.save(task)).thenReturn(task);
+        Task savedTask = new Task(title, description);
 
-        assertNotNull(taskService.create(title, description));
-        assertEquals(title, task.getTitle());
-        assertEquals(description, task.getDescription());
+        when(taskRepository.save(any(Task.class))).thenReturn(savedTask);
 
-        verify(taskRepository.save(any(Task.class)));
+        Task result = taskService.create(title, description);
+
+        assertNotNull(result);
+        assertEquals(title, result.getTitle());
+        assertEquals(description, result.getDescription());
+
+        verify(taskRepository).save(any(Task.class));
     }
 }
