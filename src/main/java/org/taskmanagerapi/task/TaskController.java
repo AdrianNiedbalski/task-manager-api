@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import org.taskmanagerapi.task.dto.CreateTaskRequest;
 import org.taskmanagerapi.task.dto.TaskResponse;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
@@ -15,15 +17,13 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    @Valid
-    @RequestBody CreateTaskRequest request
-    public CreateTaskRequest createTask(CreateTaskRequest request) {
+    public CreateTaskRequest createTask(@Valid @RequestBody CreateTaskRequest request) {
         Task createTask = taskService.create(request.title(), request.description());
         return new CreateTaskRequest(createTask.getTitle(), createTask.getDescription());
     }
 
     @GetMapping("/all")
-    public Task findAll() {
+    public List<Task> findAll() {
         return taskService.findAll();
     }
 
