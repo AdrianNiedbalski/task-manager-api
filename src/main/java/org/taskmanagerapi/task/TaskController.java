@@ -21,7 +21,7 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     public TaskResponse createTask(@Valid @RequestBody CreateTaskRequest request) {
         Task createTask = taskService.create(request.title(), request.description());
-        return new TaskResponse(createTask.getId(), createTask.getTitle(), createTask.getDescription(), createTask.getStatus(), createTask.getCreatedAt());
+        return toResponse(createTask);
     }
 
     @GetMapping
@@ -32,7 +32,7 @@ public class TaskController {
                 .toList();
     }
 
-    public TaskResponse toResponse(Task task) {
+    private TaskResponse toResponse(Task task) {
         return new TaskResponse(
                 task.getId(),
                 task.getTitle(),
