@@ -20,4 +20,9 @@ public class TaskService {
     public List<Task> findAll() {
         return taskRepository.findAll();
     }
+
+    public Task findById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
+    }
 }

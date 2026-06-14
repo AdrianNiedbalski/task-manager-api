@@ -61,4 +61,18 @@ class TaskServiceTest {
         assertEquals("Another task", result.get(1).getTitle());
         verify(taskRepository).findAll();
     }
+
+    @Test
+    @DisplayName("Find Task By Id Test")
+    void findTaskByIdTest() {
+        Task task = new Task(TITLE, DESCRIPTION);
+        when(taskRepository.findById(1L)).thenReturn(task));
+
+        Task result = taskService.findById(1L);
+
+        assertNotNull(result);
+        assertEquals(TITLE, result.getTitle());
+        assertEquals(DESCRIPTION, result.getDescription());
+        verify(taskRepository).findById(1L);
+    }
 }

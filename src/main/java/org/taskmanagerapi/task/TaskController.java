@@ -32,6 +32,12 @@ public class TaskController {
                 .toList();
     }
 
+    @GetMapping("/{id}")
+    public TaskResponse findTaskById(@PathVariable Long id) {
+        Task task = taskService.findById(id);
+        return toResponse(task);
+    }
+
     private TaskResponse toResponse(Task task) {
         return new TaskResponse(
                 task.getId(),
