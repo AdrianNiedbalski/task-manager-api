@@ -7,6 +7,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.taskmanagerapi.task.dto.CreateTaskRequest;
 import tools.jackson.databind.ObjectMapper;
 
@@ -61,7 +62,7 @@ public class TaskControllerTest {
         mockMvc.perform(post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
 
         verify(taskService, never()).create(request.title(), request.description());
     }
@@ -102,8 +103,9 @@ public class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("Find task by id not found returns 400")
-    public void findTaskById_notFound_shouldReturn400() throws Exception {
+    @DisplayName("Find task by id not found returns 404")
+    @ExceptionHandler
+    public void findTaskById_notFound_shouldReturn404() throws Exception {
 
         when(taskService.findById(id)).thenThrow(new IllegalArgumentException("Task not found with id: " + id));
 
