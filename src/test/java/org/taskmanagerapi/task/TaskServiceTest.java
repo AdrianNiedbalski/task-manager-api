@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.taskmanagerapi.task.exception.TaskNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,7 +82,7 @@ class TaskServiceTest {
     void findTaskByIdNotFoundTest() {
         when(taskRepository.findById(1L)).thenReturn(Optional.empty());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        TaskNotFoundException exception = assertThrows(TaskNotFoundException.class, () -> {
             taskService.findById(1L);
         });
 
