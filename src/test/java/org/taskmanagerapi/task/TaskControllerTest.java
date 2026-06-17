@@ -62,7 +62,7 @@ public class TaskControllerTest {
         mockMvc.perform(post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
 
         verify(taskService, never()).create(request.title(), request.description());
     }
@@ -104,13 +104,12 @@ public class TaskControllerTest {
 
     @Test
     @DisplayName("Find task by id not found returns 404")
-    @ExceptionHandler
     public void findTaskById_notFound_shouldReturn404() throws Exception {
 
         when(taskService.findById(id)).thenThrow(new IllegalArgumentException("Task not found with id: " + id));
 
         mockMvc.perform(get("/api/tasks/{id}", id))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Task not found with id: " + id));
 
         verify(taskService).findById(id);
