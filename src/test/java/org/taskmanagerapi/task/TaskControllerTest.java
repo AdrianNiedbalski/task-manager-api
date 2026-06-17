@@ -34,7 +34,7 @@ public class TaskControllerTest {
 
     private static final String TITLE = "Test task";
     private static final String DESCRIPTION = "Test task description";
-    private static final Long id = 1L;
+    private static final Long TASK_ID = 1L;
 
     @Test
     @DisplayName("Create Task Test")
@@ -90,15 +90,15 @@ public class TaskControllerTest {
     public void findTaskById_shouldReturn200AndTask() throws Exception {
         Task task = new Task(TITLE, DESCRIPTION);
 
-        when(taskService.findById(id)).thenReturn(task);
+        when(taskService.findById(TASK_ID)).thenReturn(task);
 
-        mockMvc.perform(get("/api/tasks/{id}", id))
+        mockMvc.perform(get("/api/tasks/{id}", TASK_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(task.getTitle()))
                 .andExpect(jsonPath("$.description").value(task.getDescription()))
                 .andExpect(jsonPath("$.status").value(task.getStatus().name()));
 
-        verify(taskService).findById(id);
+        verify(taskService).findById(TASK_ID);
 
     }
 
@@ -106,12 +106,12 @@ public class TaskControllerTest {
     @DisplayName("Find task by id not found returns 404")
     public void findTaskById_notFound_shouldReturn404() throws Exception {
 
-        when(taskService.findById(id)).thenThrow(new TaskNotFoundException(id));
+        when(taskService.findById(TASK_ID)).thenThrow(new TaskNotFoundException(TASK_ID));
 
-        mockMvc.perform(get("/api/tasks/{id}", id))
+        mockMvc.perform(get("/api/tasks/{id}", TASK_ID))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Task not found with id: " + id));
+                .andExpect(jsonPath("$.message").value("Task not found with id: " + TASK_ID));
 
-        verify(taskService).findById(id);
+        verify(taskService).findById(TASK_ID);
     }
 }

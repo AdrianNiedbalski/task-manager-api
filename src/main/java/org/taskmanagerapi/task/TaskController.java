@@ -33,7 +33,6 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    @ExceptionHandler
     public TaskResponse findTaskById(@PathVariable Long id) {
         Task task = taskService.findById(id);
         return toResponse(task);
