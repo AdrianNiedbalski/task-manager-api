@@ -1,6 +1,7 @@
 package org.taskmanagerapi.task;
 
 import org.springframework.stereotype.Service;
+import org.taskmanagerapi.task.exception.TaskNotFoundException;
 
 import java.util.List;
 
@@ -23,6 +24,6 @@ public class TaskService {
 
     public Task findById(Long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
+                .orElseThrow(() -> new TaskNotFoundException(id));
     }
 }

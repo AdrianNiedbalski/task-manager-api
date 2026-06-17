@@ -7,8 +7,8 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.taskmanagerapi.task.dto.CreateTaskRequest;
+import org.taskmanagerapi.task.exception.TaskNotFoundException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
@@ -106,7 +106,7 @@ public class TaskControllerTest {
     @DisplayName("Find task by id not found returns 404")
     public void findTaskById_notFound_shouldReturn404() throws Exception {
 
-        when(taskService.findById(id)).thenThrow(new IllegalArgumentException("Task not found with id: " + id));
+        when(taskService.findById(id)).thenThrow(new TaskNotFoundException(id));
 
         mockMvc.perform(get("/api/tasks/{id}", id))
                 .andExpect(status().isNotFound())
