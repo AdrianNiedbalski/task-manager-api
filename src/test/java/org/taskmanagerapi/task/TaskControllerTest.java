@@ -139,20 +139,20 @@ public class TaskControllerTest {
 
     @Test
     @DisplayName("Change status with null status should return 400")
-    public void changeStatus_withNullStatus_shouldReturn400 () throws Exception{
+    public void changeStatus_withNullStatus_shouldReturn400() throws Exception {
         String requestJson = "{}";
 
         mockMvc.perform(patch("/api/tasks/{id}/status", TASK_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
                 .andExpect(status().isBadRequest());
 
         verify(taskService, never()).changeStatus(anyLong(), any());
     }
 
     @Test
-    @DisplayName("Delete task should return 200 when task exist")
-    public void deleteTask_shouldReturn204WhenTaskExists () throws Exception{
+    @DisplayName("Delete task should return 204 when task exist")
+    public void deleteTask_shouldReturn204WhenTaskExists() throws Exception {
 
         mockMvc.perform(delete("/api/tasks/{id}", TASK_ID))
                 .andExpect(status().isNoContent());
@@ -162,14 +162,13 @@ public class TaskControllerTest {
 
     @Test
     @DisplayName("Delete task not found should return 404")
-    public void deleteTask_notFound_shouldReturn404 () throws Exception{
-    doThrow(new TaskNotFoundException(TASK_ID)).when(taskService).delete(TASK_ID);
+    public void deleteTask_notFound_shouldReturn404() throws Exception {
+        doThrow(new TaskNotFoundException(TASK_ID)).when(taskService).delete(TASK_ID);
 
         mockMvc.perform(delete("/api/tasks/{id}", TASK_ID))
-                .andExcept(status().isNotFound())
-                .andExcept(jsonPath("$.message"));
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Task not found with id: " + TASK_ID));
 
-        assertEquals("Task not found with id: " + TASK_ID, exception.getMessage());
         verify(taskService).delete(TASK_ID);
     }
 }
