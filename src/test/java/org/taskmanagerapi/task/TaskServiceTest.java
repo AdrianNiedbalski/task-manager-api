@@ -109,20 +109,15 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Change status task does nott exist")
+    @DisplayName("Change status task does not exist")
     void changeStatus_shouldThrowExceptionWhenTaskDoesNotExist() {
         Long id = 1L;
         TaskStatus newStatus = TaskStatus.DONE;
-
-        Task task = new Task(TITLE, DESCRIPTION);
-
         when(taskRepository.findById(id)).thenReturn(Optional.empty());
-
-        assertThrows(TaskNotFoundException.class,
-                () -> taskService.changeStatus(id, newStatus));
 
         TaskNotFoundException exception = assertThrows(TaskNotFoundException.class,
                 () -> taskService.changeStatus(id, newStatus));
+
         verify(taskRepository).findById(id);
         verify(taskRepository, never()).save(any(Task.class));
     }

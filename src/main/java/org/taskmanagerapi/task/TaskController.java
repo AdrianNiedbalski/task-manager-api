@@ -5,16 +5,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.taskmanagerapi.task.dto.CreateTaskRequest;
 import org.taskmanagerapi.task.dto.TaskResponse;
+import org.taskmanagerapi.task.dto.UpdateTaskStatusRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
     private final TaskService taskService;
+    private final TaskRepository taskRepository;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, TaskRepository taskRepository) {
         this.taskService = taskService;
+        this.taskRepository = taskRepository;
     }
 
     @PostMapping
@@ -35,6 +39,13 @@ public class TaskController {
     @GetMapping("/{id}")
     public TaskResponse findTaskById(@PathVariable Long id) {
         Task task = taskService.findById(id);
+        return toResponse(task);
+    }
+
+    @PostMapping("/{id}/status")
+    public TaskResponse changeStatus(@PathVariable Long id, @Valid @RequestBody UpdateTaskStatusRequest request){
+        Task task = taskService.changeStatus(id, request.status());
+
         return toResponse(task);
     }
 
