@@ -96,11 +96,16 @@ class TaskServiceTest {
         Long id = 0L;
         TaskStatus newStatus = TaskStatus.DONE;
 
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException(id));
-        task.changeStatus(newStatus);
+        Task task = new Task(TITLE, DESCRIPTION);
 
-        when(task.changeStatus(newStatus)).thenReturn(task.getStatus() == "DONE"));
+        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
 
+        when(taskRepository.save(any(Task.class))).thenReturn(task);
+
+        Task result = taskService.changeStatus(id, newStatus);
+
+        assertEquals("DONE", result.getStatus());
+        verify(taskRepository.findById(id));
+        verify(taskRepository.save(result));
     }
 }
