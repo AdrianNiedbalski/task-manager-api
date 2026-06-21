@@ -93,6 +93,14 @@ class TaskServiceTest {
     @Test
     @DisplayName("Change status task and save")
     void changeStatus_shouldChangeTaskStatusAndSaveTask() {
+        Long id = 0L;
+        TaskStatus newStatus = TaskStatus.DONE;
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+        task.changeStatus(newStatus);
+
+        when(task.changeStatus(newStatus)).thenReturn(task.getStatus() == "DONE"));
 
     }
 }
