@@ -126,7 +126,7 @@ class TaskServiceTest {
 
     @Test
     @DisplayName("Delete task, should delete when exist")
-    public void deleteTask_shouldDeleteTaskWhenTaskExists () {
+    public void deleteTask_shouldDeleteTaskWhenTaskExists() {
         Long id = 1L;
         Task task = new Task(TITLE, DESCRIPTION);
 
@@ -144,10 +144,11 @@ class TaskServiceTest {
         Long id = 1L;
         when(taskRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(TaskNotFoundException.class, () -> taskService.delete(id));
-        TaskNotFoundException exception = new TaskNotFoundException(id);
-
-        assertEquals("Task not found", exception.getMessage());
+        TaskNotFoundException exception = assertThrows(
+                TaskNotFoundException.class,
+                () -> taskService.delete(id)
+        );
+        assertEquals("Task not found id: " + id, exception.getMessage());
         verify(taskRepository).findById(id);
         verify(taskRepository, never()).delete(any(Task.class));
 
