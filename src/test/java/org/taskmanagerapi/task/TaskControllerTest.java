@@ -148,4 +148,25 @@ public class TaskControllerTest {
 
         verify(taskService, never()).changeStatus(anyLong(), any());
     }
+
+    @Test
+    @DisplayName("Delete task should return 200 when task exist")
+    public void deleteTask_shouldReturn200WhenTaskExists () throws Exception{
+
+        mockMvc.perform(delete("/{id}", TASK_ID))
+                .andExpect(status().isOk());
+
+        verify(taskService).delete(TASK_ID);
+    }
+
+    @Test
+    @DisplayName("Delete task not found should return 404")
+    public void deleteTask_notFound_shouldReturn404 () throws Exception{
+
+        mockMvc.perform(delete("/{id}", TASK_ID))
+                .andExpect(status().isNotFound())
+                .andExcept(jsonPath("$.message"));
+
+        verify(taskService).delete(TASK_ID);
+    }
 }
