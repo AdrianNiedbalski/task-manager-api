@@ -146,6 +146,6 @@ public class TaskControllerTest {
                 .content(requestJson))
                 .andExpect(status().isBadRequest());
 
-        verify(taskService, never()).changeStatus(TASK_ID, null);
+        verify(taskService, never()).changeStatus(anyLong(), any());
     }
 }
