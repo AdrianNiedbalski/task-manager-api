@@ -135,4 +135,14 @@ public class TaskControllerTest {
 
         verify(taskService).changeStatus(TASK_ID, TaskStatus.DONE);
     }
+
+    @Test
+    @DisplayName("Change status with null status should return 400")
+    public void changeStatus_withNullStatus_shouldReturn400 () throws Exception{
+        UpdateTaskStatusRequest request = new UpdateTaskStatusRequest(null);
+
+        when(taskService.changeStatus(TASK_ID, null)).thenThrow();
+
+        mockMvc.perform(patch("/api/tasks/{id}/status", TASK_ID));
+    }
 }
