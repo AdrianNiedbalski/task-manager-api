@@ -31,8 +31,7 @@ public class TaskService {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
         task.changeStatus(newStatus);
-        taskRepository.save(task);
 
-        return task;
+        return taskRepository.save(task);
     }
 }

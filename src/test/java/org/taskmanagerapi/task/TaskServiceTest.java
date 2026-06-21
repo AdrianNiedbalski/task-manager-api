@@ -13,8 +13,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("TaskService Test")
@@ -106,6 +105,25 @@ class TaskServiceTest {
 
         assertEquals(TaskStatus.DONE, result.getStatus());
         verify(taskRepository).findById(id);
-        verify(taskRepository).save(result);
+        verify(taskRepository).save(task);
+    }
+
+    @Test
+    @DisplayName("Change status task does nott exist")
+    void changeStatus_shouldThrowExceptionWhenTaskDoesNotExist() {
+        Long id = 1L;
+        TaskStatus newStatus = TaskStatus.DONE;
+
+        Task task = new Task(TITLE, DESCRIPTION);
+
+        when(taskRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(TaskNotFoundException.class,
+                () -> taskService.changeStatus(id, newStatus));
+
+        TaskNotFoundException exception = assertThrows(TaskNotFoundException.class,
+                () -> taskService.changeStatus(id, newStatus));
+        verify(taskRepository).findById(id);
+        verify(taskRepository, never()).save(any(Task.class));
     }
 }
