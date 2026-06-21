@@ -132,7 +132,7 @@ class TaskServiceTest {
 
         when(taskRepository.findById(id)).thenReturn(Optional.of(task));
 
-        //taskService.delete(id);
+        taskService.delete(id);
 
         verify(taskRepository).findById(id);
         verify(taskRepository).delete(task);
@@ -141,12 +141,10 @@ class TaskServiceTest {
     @Test
     @DisplayName("Delete task throw exception when task doest not exist")
     public void deleteTask_shouldThrowExceptionWhenTaskDoesNotExist() throws Exception {
-        Long id = null;
-
+        Long id = 1L;
         when(taskRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(TaskNotFoundException.class, () -> taskService.delete(id));
-
         TaskNotFoundException exception = new TaskNotFoundException(id);
 
         assertEquals("Task not found", exception.getMessage());
