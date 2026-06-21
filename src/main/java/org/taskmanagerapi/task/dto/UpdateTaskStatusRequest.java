@@ -3,12 +3,10 @@ package org.taskmanagerapi.task.dto;
 import jakarta.validation.constraints.NotNull;
 import org.taskmanagerapi.task.TaskStatus;
 
-public class UpdateTaskStatusRequest {
-    @NotNull
-    private TaskStatus status;
+public record UpdateTaskStatusRequest (@NotNull  TaskStatus status) {
 
-    public UpdateTaskStatusRequest (TaskStatus newStatus) {
-        this.status = newStatus;
+    public UpdateTaskStatusRequest (TaskStatus status) {
+        this.status = status;
     }
 
     public TaskStatus getTaskStatus () {

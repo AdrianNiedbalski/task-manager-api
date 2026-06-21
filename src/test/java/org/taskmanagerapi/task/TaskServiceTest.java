@@ -89,4 +89,10 @@ class TaskServiceTest {
         assertEquals("Task not found with id: 1", exception.getMessage());
         verify(taskRepository).findById(1L);
     }
+
+    @Test
+    @DisplayName("Change status task and save")
+    void changeStatus_shouldChangeTaskStatusAndSaveTask() {
+
+    }
 }
