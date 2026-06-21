@@ -8,13 +8,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.taskmanagerapi.task.dto.CreateTaskRequest;
+import org.taskmanagerapi.task.dto.UpdateTaskStatusRequest;
 import org.taskmanagerapi.task.exception.TaskNotFoundException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -117,20 +117,20 @@ public class TaskControllerTest {
 
     @Test
     @DisplayName("Update task status")
-    public void changeStatus_shouldReturn200AndUpdateTask (){
+    public void changeStatus_shouldReturn200AndUpdateTask() throws Exception {
         TaskStatus newStatus = TaskStatus.DONE;
-        taskService.changeStatus(TASK_ID, newStatus);
+        UpdateTaskStatusRequest request = new UpdateTaskStatusRequest(newStatus);
         Task task = new Task(TITLE, DESCRIPTION);
 
         when(taskService.changeStatus(TASK_ID, newStatus)).thenReturn(task);
 
         mockMvc.perform(patch("/api/tasks/{id}/status", TASK_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status.is(200))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status.isOk())
                 .andExpect(jsonPath("$.status").value("DONE"))
-                .andExpect(jsonPath("$.title").value("TITLE"));
+                .andExpect(jsonPath("$.title").value(TITLE));
 
-        verify(taskService.changeStatus(TASK_ID, TaskStatus.DONE));
+        verify(taskService).changeStatus(TASK_ID, TaskStatus.DONE);
     }
 }
