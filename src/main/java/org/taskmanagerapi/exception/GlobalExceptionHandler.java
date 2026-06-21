@@ -11,7 +11,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TaskNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleTaskNotFound (TaskNotFoundException e) {
+    public ErrorResponse handleTaskNotFound(TaskNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 }

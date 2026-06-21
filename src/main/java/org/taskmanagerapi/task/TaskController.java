@@ -8,7 +8,6 @@ import org.taskmanagerapi.task.dto.TaskResponse;
 import org.taskmanagerapi.task.dto.UpdateTaskStatusRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -41,7 +40,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}/status")
-    public TaskResponse changeStatus(@PathVariable Long id, @Valid @RequestBody UpdateTaskStatusRequest request){
+    public TaskResponse changeStatus(@PathVariable Long id, @Valid @RequestBody UpdateTaskStatusRequest request) {
         Task task = taskService.changeStatus(id, request.status());
 
         return toResponse(task);

@@ -14,8 +14,8 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -113,5 +113,24 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.message").value("Task not found with id: " + TASK_ID));
 
         verify(taskService).findById(TASK_ID);
+    }
+
+    @Test
+    @DisplayName("Update task status")
+    public void changeStatus_shouldReturn200AndUpdateTask (){
+        TaskStatus newStatus = TaskStatus.DONE;
+        taskService.changeStatus(TASK_ID, newStatus);
+        Task task = new Task(TITLE, DESCRIPTION);
+
+        when(taskService.changeStatus(TASK_ID, newStatus)).thenReturn(task);
+
+        mockMvc.perform(patch("/api/tasks/{id}/status", TASK_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status.is(200))
+                .andExpect(jsonPath("$.status").value("DONE"))
+                .andExpect(jsonPath("$.title").value("TITLE"));
+
+        verify(taskService.changeStatus(TASK_ID, TaskStatus.DONE));
     }
 }
