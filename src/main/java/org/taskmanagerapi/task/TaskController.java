@@ -2,10 +2,12 @@ package org.taskmanagerapi.task;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.taskmanagerapi.task.dto.CreateTaskRequest;
 import org.taskmanagerapi.task.dto.TaskResponse;
 import org.taskmanagerapi.task.dto.UpdateTaskStatusRequest;
+import org.taskmanagerapi.task.exception.TaskNotFoundException;
 
 import java.util.List;
 
@@ -13,9 +15,11 @@ import java.util.List;
 @RequestMapping("/api/tasks")
 public class TaskController {
     private final TaskService taskService;
+    private final TaskRepository taskRepository;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, TaskRepository taskRepository) {
         this.taskService = taskService;
+        this.taskRepository = taskRepository;
     }
 
     @PostMapping
@@ -44,6 +48,12 @@ public class TaskController {
         Task task = taskService.changeStatus(id, request.status());
 
         return toResponse(task);
+    }
+
+    @DeleteMapping("/api/tasks/{id}")
+    public void deleteTask(Long id) {
+        Task taskToDelete = taskService.findById(id);
+        taskRepository.delete(taskToDelete);
     }
 
     private TaskResponse toResponse(Task task) {

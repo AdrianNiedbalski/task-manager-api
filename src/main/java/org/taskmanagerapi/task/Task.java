@@ -1,6 +1,7 @@
 package org.taskmanagerapi.task;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 public class Task {
     @Id
     @GeneratedValue
+    @NotNull
     private Long id;
     private String title;
     private String description;
