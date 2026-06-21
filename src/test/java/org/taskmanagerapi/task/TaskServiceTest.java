@@ -93,7 +93,7 @@ class TaskServiceTest {
     @Test
     @DisplayName("Change status task and save")
     void changeStatus_shouldChangeTaskStatusAndSaveTask() {
-        Long id = 0L;
+        Long id = 1L;
         TaskStatus newStatus = TaskStatus.DONE;
 
         Task task = new Task(TITLE, DESCRIPTION);
@@ -104,8 +104,8 @@ class TaskServiceTest {
 
         Task result = taskService.changeStatus(id, newStatus);
 
-        assertEquals("DONE", result.getStatus());
-        verify(taskRepository.findById(id));
-        verify(taskRepository.save(result));
+        assertEquals(TaskStatus.DONE, result.getStatus());
+        verify(taskRepository).findById(id);
+        verify(taskRepository).save(result);
     }
 }
