@@ -14,11 +14,9 @@ import java.util.Optional;
 @RequestMapping("/api/tasks")
 public class TaskController {
     private final TaskService taskService;
-    private final TaskRepository taskRepository;
 
-    public TaskController(TaskService taskService, TaskRepository taskRepository) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
-        this.taskRepository = taskRepository;
     }
 
     @PostMapping
@@ -42,7 +40,7 @@ public class TaskController {
         return toResponse(task);
     }
 
-    @PostMapping("/{id}/status")
+    @PatchMapping("/{id}/status")
     public TaskResponse changeStatus(@PathVariable Long id, @Valid @RequestBody UpdateTaskStatusRequest request){
         Task task = taskService.changeStatus(id, request.status());
 

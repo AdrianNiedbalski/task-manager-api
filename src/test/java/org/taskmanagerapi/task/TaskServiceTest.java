@@ -118,6 +118,8 @@ class TaskServiceTest {
         TaskNotFoundException exception = assertThrows(TaskNotFoundException.class,
                 () -> taskService.changeStatus(id, newStatus));
 
+
+        assertEquals("Task not found with id: " + id, exception.getMessage());
         verify(taskRepository).findById(id);
         verify(taskRepository, never()).save(any(Task.class));
     }
