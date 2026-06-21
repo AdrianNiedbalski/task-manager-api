@@ -123,4 +123,35 @@ class TaskServiceTest {
         verify(taskRepository).findById(id);
         verify(taskRepository, never()).save(any(Task.class));
     }
+
+    @Test
+    @DisplayName("Delete task, should delete when exist")
+    public void deleteTask_shouldDeleteTaskWhenTaskExists () {
+        Long id = 1L;
+        Task task = new Task(TITLE, DESCRIPTION);
+
+        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
+
+        //taskService.delete(id);
+
+        verify(taskRepository).findById(id);
+        verify(taskRepository).delete(task);
+    }
+
+    @Test
+    @DisplayName("Delete task throw exception when task doest not exist")
+    public void deleteTask_shouldThrowExceptionWhenTaskDoesNotExist() throws Exception {
+        Long id = null;
+
+        when(taskRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(TaskNotFoundException.class, () -> taskService.delete(id));
+
+        TaskNotFoundException exception = new TaskNotFoundException(id);
+
+        assertEquals("Task not found", exception.getMessage());
+        verify(taskRepository).findById(id);
+        verify(taskRepository, never()).delete(any(Task.class));
+
+    }
 }
