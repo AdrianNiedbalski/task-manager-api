@@ -14,6 +14,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -151,10 +152,10 @@ public class TaskControllerTest {
 
     @Test
     @DisplayName("Delete task should return 200 when task exist")
-    public void deleteTask_shouldReturn200WhenTaskExists () throws Exception{
+    public void deleteTask_shouldReturn204WhenTaskExists () throws Exception{
 
-        mockMvc.perform(delete("/{id}", TASK_ID))
-                .andExpect(status().isOk());
+        mockMvc.perform(delete("/api/tasks/{id}", TASK_ID))
+                .andExpect(status().isNoContent());
 
         verify(taskService).delete(TASK_ID);
     }
@@ -162,11 +163,13 @@ public class TaskControllerTest {
     @Test
     @DisplayName("Delete task not found should return 404")
     public void deleteTask_notFound_shouldReturn404 () throws Exception{
+    doThrow(new TaskNotFoundException(TASK_ID)).when(taskService).delete(TASK_ID);
 
-        mockMvc.perform(delete("/{id}", TASK_ID))
-                .andExpect(status().isNotFound())
+        mockMvc.perform(delete("/api/tasks/{id}", TASK_ID))
+                .andExcept(status().isNotFound())
                 .andExcept(jsonPath("$.message"));
 
+        assertEquals("Task not found with id: " + TASK_ID, exception.getMessage());
         verify(taskService).delete(TASK_ID);
     }
 }
