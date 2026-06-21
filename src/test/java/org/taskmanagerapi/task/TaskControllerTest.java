@@ -122,12 +122,14 @@ public class TaskControllerTest {
         UpdateTaskStatusRequest request = new UpdateTaskStatusRequest(newStatus);
         Task task = new Task(TITLE, DESCRIPTION);
 
+        task.changeStatus(newStatus);
+
         when(taskService.changeStatus(TASK_ID, newStatus)).thenReturn(task);
 
         mockMvc.perform(patch("/api/tasks/{id}/status", TASK_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status.isOk())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("DONE"))
                 .andExpect(jsonPath("$.title").value(TITLE));
 
